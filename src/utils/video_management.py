@@ -45,6 +45,6 @@ class VideoManagement:
                 f"ffmpeg error: {e.stderr.decode() if hasattr(e, 'stderr') else str(e)}"
             )
 
-        os.remove(file)
+        #os.remove(file)
 
         logger.info("Finished converting {}\n".format(file))
