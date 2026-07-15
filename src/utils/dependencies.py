@@ -1,16 +1,14 @@
 import subprocess
-import sys
 import platform
 from subprocess import SubprocessError
 
 from .logger_manager import logger
-from .utils import is_linux
 
 
-def check_ffmpeg_binary():
+def check_ffmpeg_binary(ffmpeg_path="ffmpeg"):
     try:
         subprocess.run(
-            ["ffmpeg"],
+            [ffmpeg_path],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
         )
@@ -137,12 +135,8 @@ def install_requirements():
         print()
         logger.error("Installing requirements...\n")
 
-        cmd = [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
-        if is_linux():
-            cmd.append("--break-system-packages")
-
         subprocess.run(
-            cmd,
+            ["uv", "sync", "--no-dev"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             check=True,
@@ -163,11 +157,12 @@ def check_and_install_dependencies():
         check_curl_cffi_library(),
         check_requests_library(),
         check_telethon_library(),
-        check_ffmpeg_binary(),
     ]
 
     if False in dependencies:
         install_requirements()
 
-    if not check_ffmpeg_binary():
+
+def check_ffmpeg(ffmpeg_path="ffmpeg"):
+    if not check_ffmpeg_binary(ffmpeg_path):
         install_ffmpeg_binary()
